@@ -16,7 +16,7 @@ description:
 author:
     - "Trystan Mata (@tytan652)"
 requirements:
-    - "python >= 2.6"
+    - "python >= 3.9"
 
 options:
     state:
@@ -129,6 +129,121 @@ options:
                     - New name for httptest
                 required: false
                 type: str
+            steps:
+                description:
+                    - Scenario steps for the httptest
+                    - Required if state is "present" and creating an httptest.
+                required: false
+                type: list
+                elements: dict
+                suboptions:
+                    name:
+                        description:
+                            - Name of the scenario step.
+                        required: true
+                        type: str
+                    url:
+                        description:
+                            - URL to be checked.
+                        required: true
+                        type: str
+                    query_field:
+                        description:
+                            - Query fields used when performing the scenario step.
+                        required: false
+                        type: list
+                        elements: dict
+                        suboptions:
+                            name:
+                                description:
+                                    - Name of the query field.
+                                required: true
+                                type: str
+                            value:
+                                description:
+                                    - Value of the query field.
+                                required: true
+                                type: str
+                    posts:
+                        description:
+                            - POST variables for the scenario step.
+                        required: false
+                        type: list
+                        elements: dict
+                        suboptions:
+                            name:
+                                description:
+                                    - Name of the POST field.
+                                required: true
+                                type: str
+                            value:
+                                description:
+                                    - Value of the POST field.
+                                required: true
+                                type: str
+                    variables:
+                        description:
+                            - Variables used when performing the scenario step.
+                            - Overrides I(params) variables.
+                        required: false
+                        type: list
+                        elements: dict
+                        suboptions:
+                            name:
+                                description:
+                                    - Name of the variable field.
+                                required: true
+                                type: str
+                            value:
+                                description:
+                                    - Value of the variable field.
+                                required: true
+                                type: str
+                    headers:
+                        description:
+                            - HTTP headers used when performing the scenario step.
+                            - Overrides I(params) headers.
+                        required: false
+                        type: list
+                        elements: dict
+                        suboptions:
+                            name:
+                                description:
+                                    - Name of the header field.
+                                required: true
+                                type: str
+                            value:
+                                description:
+                                    - Value of the header field.
+                                required: true
+                                type: str
+                    follow_redirects:
+                        description:
+                            - Whether to follow HTTP redirects.
+                        required: false
+                        type: bool
+                    retrieve_mode:
+                        description:
+                            - Part of the HTTP response that the scenario step must retrieve.
+                        required: false
+                        type: str
+                        choices: ["only_body", "only_headers", "headers_and_body"]
+                    timeout:
+                        description:
+                            - Request timeout of the scenario step.
+                        required: false
+                        type: str
+                    required:
+                        description:
+                            - Text that must be present in the response.
+                        required: false
+                        type: str
+                    status_codes:
+                        description:
+                            - Expected response status code.
+                        required: false
+                        type: list
+                        element: int
 
 extends_documentation_fragment:
 - community.zabbix.zabbix
@@ -140,6 +255,9 @@ from ansible_collections.community.zabbix.plugins.module_utils.base import Zabbi
 import ansible_collections.community.zabbix.plugins.module_utils.helpers as zabbix_utils
 
 class Httptest(ZabbixBase):
+    RETRIEVE_MODES = {'only_body': 0,
+                      'only_headers': 1,
+                      'headers_and_body': 2}
 
     def get_hosts_templates(self, host_name, template_name):
         if host_name is not None:
@@ -187,6 +305,23 @@ class Httptest(ZabbixBase):
                 params['status'] = 1
             else:
                 self._module.fail_json(msg="Status must be 'enabled' or 'disabled', got %s" % status)
+        if 'steps' in params:
+            no = 0
+            for step in params['steps']:
+                no += 1
+                step['no'] = no
+                if 'follow_redirects' in step:
+                    follow_redirects = step['follow_redirects']
+                    if follow_redirects:
+                        step['follow_redirects'] = 1
+                    else:
+                        step['follow_redirects'] = 0
+                if 'retrieve_mode' in step:
+                    retrieve_mode_int = self.RETRIEVE_MODES[step['retrieve_mode']]
+                    step['retrieve_mode'] = retrieve_mode_int
+                if 'status_codes' in step:
+                    status_codes_str = ",".join(str(code) for code in step['status_codes'])
+                    step['status_codes'] = status_codes_str
 
     def add_httptest(self, params):
         if self._module.check_mode:
@@ -275,6 +410,8 @@ def main():
         if len(httptests) == 0:
             if 'new_name' in params:
                 module.fail_json('Cannot rename httptest: %s is not found' % name)
+            if not 'steps' in params:
+                module.fail_json('Cannot create httptest without steps')
             hosts_templates = httptest.get_hosts_templates(host_name, template_name)
             for hosts_template in hosts_templates:
                 if 'hostid' in hosts_template:
