@@ -261,6 +261,51 @@ options:
                             - Value of the httptest tag.
                         required: false
                         type: str
+            authentication:
+                description:
+                    - HTTP authentication method used by the httptest.
+                required: false
+                type: str
+                choices: ["none", "basic", "ntlm"]
+            username:
+                description:
+                    - Username to authenticate with the host.
+                    - Used if C(authentication) is one of C(basic) or C(ntlm)
+                    - Alias for "http_user" in API docs.
+                required: false
+                type: str
+            password:
+                description:
+                    - Password to authenticate with the host.
+                    - Used if C(authentication) is one of C(basic) or C(ntlm)
+                    - Alias for "http_password" in API docs.
+                required: false
+                type: str
+            verify_peer:
+                description:
+                    - Whether the httptest should verify the host's certificate.
+                required: false
+                type: bool
+            verify_host:
+                description:
+                    - Whether the httptest should verify the host's hostname.
+                required: false
+                type: bool
+            ssl_cert_file:
+                description:
+                    - Public SSL key file path for client authentication.
+                required: false
+                type: str
+            ssl_key_file:
+                description:
+                    - Private SSL key file path for client authentication.
+                required: false
+                type: str
+            ssl_key_password:
+                description:
+                    - Password of the private SSL key file.
+                required: false
+                type: str
 
 extends_documentation_fragment:
 - community.zabbix.zabbix
@@ -275,6 +320,10 @@ class Httptest(ZabbixBase):
     RETRIEVE_MODES = {'only_body': 0,
                       'only_headers': 1,
                       'headers_and_body': 2}
+
+    AUTHENTICATION_TYPES = {'none': 0,
+                            'basic': 1,
+                            'ntlm': 2}
 
     def get_hosts_templates(self, host_name, template_name):
         if host_name is not None:
@@ -339,6 +388,27 @@ class Httptest(ZabbixBase):
                 if 'status_codes' in step:
                     status_codes_str = ",".join(str(code) for code in step['status_codes'])
                     step['status_codes'] = status_codes_str
+        if 'authentication' in params:
+            authentication_int = self.AUTHENTICATION_TYPES[params['authentication']]
+            params['authentication'] = authentication_int
+        if 'username' in params:
+            params['http_user'] = params['username']
+            params.pop("username")
+        if 'password' in params:
+            params['http_password'] = params['password']
+            params.pop("password")
+        if 'verify_peer' in params:
+            verify = params['verify_peer']
+            if verify:
+                params['verify_peer'] = 1
+            else:
+                params['verify_peer'] = 0
+        if 'verify_host' in params:
+            verify = params['verify_host']
+            if verify:
+                params['verify_host'] = 1
+            else:
+                params['verify_host'] = 0
 
     def add_httptest(self, params):
         if self._module.check_mode:
