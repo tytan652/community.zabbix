@@ -54,6 +54,64 @@ options:
         required: false
         type: dict
         suboptions:
+            interval:
+                description:
+                    - Update interval of the httptest.
+                    - Alias for "delay" in API docs.
+                required: false
+                type: str
+            attempts:
+                description:
+                    - Number of attempts before failing the httptest
+                    - Alias for "retries" in API docs
+                required: false
+                type: int
+            agent:
+                description:
+                    - User agent string used by the httptest.
+                required: false
+                type: str
+            http_proxy:
+                description:
+                    - HTTP(S) proxy used by the httptest
+                required: false
+                type: str
+            variables:
+                description:
+                    - httptest variables.
+                    - Overriden by I(steps) variables.
+                required: false
+                type: list
+                elements: dict
+                suboptions:
+                    name:
+                        description:
+                            - Name of the variable field.
+                        required: true
+                        type: str
+                    value:
+                        description:
+                            - Value of the variable field.
+                        required: true
+                        type: str
+            headers:
+                description:
+                    - HTTP headers used when performing the httptest.
+                    - Overriden by I(steps) headers.
+                required: false
+                type: list
+                elements: dict
+                suboptions:
+                    name:
+                        description:
+                            - Name of the header field.
+                        required: true
+                        type: str
+                    value:
+                        description:
+                            - Value of the header field.
+                        required: true
+                        type: str
             status:
                 description:
                     - Status of the httptest.
@@ -109,6 +167,12 @@ class Httptest(ZabbixBase):
 
     def sanitize_params(self, name, params):
         params['name'] = name
+        if 'interval' in params:
+            params['delay'] = params['interval']
+            params.pop("interval")
+        if 'attempts' in params:
+            params['retries'] = params['attempts']
+            params.pop("attempts")
         if 'enabled' in params:
             if params['enabled']:
                 params['status'] = 'enabled'
