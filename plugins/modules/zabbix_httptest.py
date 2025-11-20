@@ -244,6 +244,23 @@ options:
                         required: false
                         type: list
                         element: int
+            tags:
+                description:
+                    - Tags of the httptest.
+                required: false
+                type: list
+                elements: dict
+                suboptions:
+                    name:
+                        description:
+                            - Name of the httptest tag.
+                        required: true
+                        type: str
+                    value:
+                        description:
+                            - Value of the httptest tag.
+                        required: false
+                        type: str
 
 extends_documentation_fragment:
 - community.zabbix.zabbix
