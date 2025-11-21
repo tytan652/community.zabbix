@@ -430,7 +430,7 @@ class Httptest(ZabbixBase):
 
     def check_httptest_changed(self, old_httptest):
         try:
-            new_httptest = self._zapi.httptest.get({'httptestid': "%s" % old_httptest['httptestid']})[0]
+            new_httptest = self._zapi.httptest.get({'httptestids': "%s" % old_httptest['httptestid']})[0]
         except Exception as e:
             self._module.fail_json(msg="Failed to get httptest: %s" % e)
         return old_httptest != new_httptest
