@@ -485,6 +485,7 @@ def main():
             for h in httptests:
                 delete_ids.append(h['httptestid'])
             results = httptest.delete_httptests(delete_ids)
+            module.exit_json(changed=True, result=results)
 
     elif state == "present":
         httptest.sanitize_params(name, params)
