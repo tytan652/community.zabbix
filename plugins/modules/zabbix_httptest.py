@@ -251,7 +251,7 @@ options:
                 type: list
                 elements: dict
                 suboptions:
-                    name:
+                    tag:
                         description:
                             - Name of the httptest tag.
                         required: true
