@@ -85,7 +85,7 @@
     state: present
   register: zbxtemprule_new
 
-- name: assert that rule was created
+- name: assert that httptest was created
   ansible.builtin.assert:
     that: zbxtemprule_new is changed
 
