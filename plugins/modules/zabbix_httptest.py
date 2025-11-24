@@ -587,7 +587,7 @@ def main():
         if len(httptests) == 0:
             if 'new_name' in params:
                 module.fail_json('Cannot rename httptest: %s is not found' % name)
-            if 'steps' not in params:
+            if not ('steps' in params):
                 module.fail_json('Cannot create httptest without steps')
             hosts_templates = httptest.get_hosts_templates(host_name, template_name)
             for hosts_template in hosts_templates:
