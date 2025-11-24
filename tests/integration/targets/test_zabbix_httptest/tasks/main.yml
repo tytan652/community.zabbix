@@ -15,7 +15,7 @@
 
   always:
     - name: "cleanup httptest if tests failed"
-      community.zabbix.zabbix_test:
+      community.zabbix.zabbix_httptest:
         host_name: ExampleHost
         name: ExampleTest
         state: absent
