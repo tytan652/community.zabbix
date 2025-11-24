@@ -341,8 +341,9 @@ EXAMPLES = r'''
     host_name: example_host
     params:
       steps:
-        url: https://zabbix-example-fqdn.org
-        status_code: [200]
+        - name: Test
+          url: https://zabbix-example-fqdn.org
+          status_code: [200]
       interval: 1h
       enabled: True
     state: present
