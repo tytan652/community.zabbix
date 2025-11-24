@@ -6,8 +6,9 @@
     host_name: ExampleHost
     params:
       steps:
-        url: https://example.com
-        status_codes: [200]
+        - name: Test
+          url: https://example.com
+          status_codes: [200]
       interval: 1h
       enabled: True
     state: present
@@ -23,8 +24,9 @@
     host_name: ExampleHost
     params:
       steps:
-        url: https://example.com
-        status_codes: [200]
+        - name: Test
+          url: https://example.com
+          status_codes: [200]
       interval: 1h
       enabled: True
     state: present
@@ -75,8 +77,9 @@
     template_name: ExampleTemplate
     params:
       steps:
-        url: https://example.com
-        status_codes: [200]
+        - name: Test
+          url: https://example.com
+          status_codes: [200]
       interval: 1h
       enabled: True
     state: present
@@ -92,8 +95,9 @@
     template_name: ExampleTemplate
     params:
       steps:
-        url: https://example.com
-        status_codes: [200]
+        - name: Test
+          url: https://example.com
+          status_codes: [200]
       interval: 1h
       enabled: True
     state: present
