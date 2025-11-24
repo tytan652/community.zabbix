@@ -243,7 +243,7 @@ options:
                             - Expected response status code.
                         required: false
                         type: list
-                        element: int
+                        elements: int
             tags:
                 description:
                     - Tags of the httptest.
@@ -403,6 +403,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.community.zabbix.plugins.module_utils.base import ZabbixBase
 import ansible_collections.community.zabbix.plugins.module_utils.helpers as zabbix_utils
+
 
 class Httptest(ZabbixBase):
     RETRIEVE_MODES = {'only_body': 0,
@@ -586,7 +587,7 @@ def main():
         if len(httptests) == 0:
             if 'new_name' in params:
                 module.fail_json('Cannot rename httptest: %s is not found' % name)
-            if not 'steps' in params:
+            if 'steps' not in params:
                 module.fail_json('Cannot create httptest without steps')
             hosts_templates = httptest.get_hosts_templates(host_name, template_name)
             for hosts_template in hosts_templates:
