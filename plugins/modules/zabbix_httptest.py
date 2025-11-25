@@ -604,6 +604,7 @@ def main():
             changed = False
             for h in httptests:
                 params['httptestid'] = h['httptestid']
+                params.pop("name")
                 if 'new_name' in params:
                     params['name'] = params['new_name']
                     params.pop("new_name")
