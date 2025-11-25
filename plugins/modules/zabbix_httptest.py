@@ -583,7 +583,7 @@ def main():
         if 'new_name' in params:
             new_name_httptest = httptest.get_httptests(params['new_name'], host_name, template_name)
             if len(new_name_httptest) > 0:
-                module.exit_json(changed=False, results=[{'httptestids': [new_name_httptest][0]['httptestid']}])
+                module.exit_json(changed=False, results=[{'httptestids': [new_name_httptest[0]['httptestid']]}])
         results = []
         if len(httptests) == 0:
             if 'new_name' in params:
