@@ -84,12 +84,10 @@
       enabled: True
     state: present
   register: zbxtemprule_new
-  when: false
 
 - name: assert that httptest was created
   ansible.builtin.assert:
     that: zbxtemprule_new is changed
-  when: false
 
 - name: test - create same Zabbix httptest once again
   community.zabbix.zabbix_httptest:
@@ -119,12 +117,10 @@
         interval: 2h
     state: present
   register: zbxtemprule_changed
-  when: false
 
 - name: expect to succeed and that things changed
   ansible.builtin.assert:
     that: zbxtemprule_changed is changed
-  when: false
 
 - name: test - rename existing zabbix httptest
   community.zabbix.zabbix_httptest:
@@ -134,12 +130,10 @@
       new_name: NewTest
     state: present
   register: zbxnamerule_changed
-  when: false
 
 - name: expect to succeed and that things changed
   ansible.builtin.assert:
     that: zbxnamerule_changed is changed
-  when: false
 
 - name: test - rename existing zabbix httptest again
   community.zabbix.zabbix_httptest:
@@ -149,12 +143,10 @@
       new_name: NewTest
     state: present
   register: zbxnamerule_existing
-  when: false
 
 - name: assert that nothing has been changed
   ansible.builtin.assert:
     that: not zbxnamerule_existing is changed
-  when: false
 
 - name: test - rename non-existing zabbix httptest
   community.zabbix.zabbix_httptest:
@@ -165,12 +157,10 @@
     state: present
   ignore_errors: true
   register: zbxnamerule_failed
-  when: false
 
 - name: expect to fail
   ansible.builtin.assert:
     that: zbxnamerule_failed is failed
-  when: false
 
 - name: test - attempt to delete previously created zabbix httptest
   community.zabbix.zabbix_httptest:
@@ -178,12 +168,10 @@
     template_name: ExampleTemplate
     state: absent
   register: zbxtemprule_existing_delete
-  when: false
 
 - name: assert that trigger was deleted
   ansible.builtin.assert:
     that: zbxtemprule_existing_delete is changed
-  when: false
 
 - name: test - attempt to delete non-existing zabbix httptest
   community.zabbix.zabbix_httptest:
@@ -191,9 +179,7 @@
     template_name: ExampleTemplate
     state: absent
   register: zbxtemprule_missing_delete
-  when: false
 
 - name: assert that nothing has been changed
   ansible.builtin.assert:
     that: not zbxtemprule_missing_delete is changed
-  when: false
