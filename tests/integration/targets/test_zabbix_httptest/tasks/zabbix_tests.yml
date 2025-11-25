@@ -18,7 +18,7 @@
   ansible.builtin.assert:
     that: zbx_host_httptest_created is changed
 
-- name: test - create same Zabbix httptest once again
+- name: test - create same Zabbix httptest on host once again
   community.zabbix.zabbix_httptest:
     name: ExampleTest
     host_name: ExampleHost
@@ -36,7 +36,7 @@
   ansible.builtin.assert:
     that: not zbx_host_httptest_existing is changed
 
-- name: test - update existing zabbix httptest
+- name: test - update existing zabbix httptest on host
   community.zabbix.zabbix_httptest:
     name: ExampleTest
     host_name: ExampleHost
@@ -49,7 +49,7 @@
   ansible.builtin.assert:
     that: zbx_host_httptest_changed is changed
 
-- name: test - rename existing zabbix httptest
+- name: test - rename existing zabbix httptest on host
   community.zabbix.zabbix_httptest:
     name: ExampleTest
     host_name: ExampleHost
@@ -62,7 +62,7 @@
   ansible.builtin.assert:
     that: zbx_host_httptest_renamed is changed
 
-- name: test - rename existing zabbix httptest again
+- name: test - rename existing zabbix httptest on host again
   community.zabbix.zabbix_httptest:
     name: ExampleTest
     host_name: ExampleHost
@@ -75,7 +75,7 @@
   ansible.builtin.assert:
     that: not zbx_host_httptest_rename_again is changed
 
-- name: test - rename non-existing zabbix httptest
+- name: test - rename non-existing zabbix httptest on host
   community.zabbix.zabbix_httptest:
     name: ExampleTest
     host_name: ExampleHost
@@ -89,7 +89,7 @@
   ansible.builtin.assert:
     that: zbx_host_httptest_rename_failed is failed
 
-- name: test - attempt to delete previously created zabbix httptest
+- name: test - attempt to delete previously created zabbix httptest on host
   community.zabbix.zabbix_httptest:
     name: NewExampleTest
     host_name: ExampleHost
@@ -100,7 +100,7 @@
   ansible.builtin.assert:
     that: zbx_host_httptest_delete is changed
 
-- name: test - attempt to delete non-existing zabbix httptest
+- name: test - attempt to delete non-existing zabbix httptest on host
   community.zabbix.zabbix_httptest:
     name: NewExampleTest
     host_name: ExampleHost
@@ -113,7 +113,7 @@
 
 - name: test - create new Zabbix httptest on template with many options set
   community.zabbix.zabbix_httptest:
-    name: Test
+    name: ExampleTest
     template_name: ExampleTemplate
     params:
       steps:
@@ -123,15 +123,15 @@
       interval: 1h
       enabled: true
     state: present
-  register: zbxtemprule_new
+  register: zbx_template_httptest_create
 
 - name: assert that httptest was created
   ansible.builtin.assert:
-    that: zbxtemprule_new is changed
+    that: zbx_template_httptest_create is changed
 
-- name: test - create same Zabbix httptest once again
+- name: test - create same Zabbix httptest on template once again
   community.zabbix.zabbix_httptest:
-    name: Test
+    name: ExampleTest
     template_name: ExampleTemplate
     params:
       steps:
@@ -141,93 +141,83 @@
       interval: 1h
       enabled: true
     state: present
-  register: zbxtemprule_existing
-  when: false
+  register: zbx_template_httptest_existing
 
 - name: assert that nothing has been changed
   ansible.builtin.assert:
-    that: not zbxtemprule_existing is changed
-  when: false
+    that: not zbx_template_httptest_existing is changed
 
-- name: test - update existing zabbix httptest
+- name: test - update existing zabbix httptest on template
   community.zabbix.zabbix_httptest:
-    name: Test
+    name: ExampleTest
     template_name: ExampleTemplate
     params:
       interval: 2h
     state: present
-  register: zbxtemprule_changed
-  when: false
+  register: zbx_template_httptest_changed
 
 - name: expect to succeed and that things changed
   ansible.builtin.assert:
-    that: zbxtemprule_changed is changed
-  when: false
+    that: zbx_template_httptest_changed is changed
 
-- name: test - rename existing zabbix httptest
+- name: test - rename existing zabbix httptest on template
   community.zabbix.zabbix_httptest:
-    name: Test
+    name: ExampleTest
     template_name: ExampleTemplate
     params:
-      new_name: NewTest
+      new_name: NewExampleTest
     state: present
-  register: zbxnamerule_changed
-  when: false
+  register: zbx_template_httptest_rename
 
 - name: expect to succeed and that things changed
   ansible.builtin.assert:
-    that: zbxnamerule_changed is changed
-  when: false
+    that: zbx_template_httptest_rename is changed
 
-- name: test - rename existing zabbix httptest again
+- name: test - rename existing zabbix httptest on template again
   community.zabbix.zabbix_httptest:
-    name: Test
+    name: ExampleTest
     template_name: ExampleTemplate
     params:
-      new_name: NewTest
+      new_name: NewExampleTest
     state: present
-  register: zbxnamerule_existing
-  when: false
+  register: zbx_template_httptest_rename_again
 
 - name: assert that nothing has been changed
   ansible.builtin.assert:
-    that: not zbxnamerule_existing is changed
-  when: false
+    that: not zbx_template_httptest_rename_again is changed
 
-- name: test - rename non-existing zabbix httptest
+- name: test - rename non-existing zabbix httptest on template
   community.zabbix.zabbix_httptest:
-    name: Test
+    name: ExampleTest
     template_name: ExampleTemplate
     params:
-      new_name: NewTest2
+      new_name: NewExampleTest2
     state: present
   ignore_errors: true
-  register: zbxnamerule_failed
-  when: false
+  register: zbx_template_httptest_rename_failed
 
 - name: expect to fail
   ansible.builtin.assert:
-    that: zbxnamerule_failed is failed
-  when: false
+    that: zbx_template_httptest_rename_failed is failed
 
-- name: test - attempt to delete previously created zabbix httptest
+- name: test - attempt to delete previously created zabbix httptest on template
   community.zabbix.zabbix_httptest:
-    name: NewTest
+    name: NewExampleTest
     template_name: ExampleTemplate
     state: absent
-  register: zbxtemprule_existing_delete
+  register: zbx_template_httptest_delete
 
 - name: assert that trigger was deleted
   ansible.builtin.assert:
-    that: zbxtemprule_existing_delete is changed
+    that: zbx_template_httptest_delete is changed
 
-- name: test - attempt to delete non-existing zabbix httptest
+- name: test - attempt to delete non-existing zabbix httptest on template
   community.zabbix.zabbix_httptest:
-    name: NewTest
+    name: NewExampleTest
     template_name: ExampleTemplate
     state: absent
-  register: zbxtemprule_missing_delete
+  register: zbx_template_httptest_missing_delete
 
 - name: assert that nothing has been changed
   ansible.builtin.assert:
-    that: not zbxtemprule_missing_delete is changed
+    that: not zbx_template_httptest_missing_delete is changed
