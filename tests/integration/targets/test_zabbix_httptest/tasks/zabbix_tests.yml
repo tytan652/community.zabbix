@@ -2,7 +2,7 @@
 
 - name: test - create new Zabbix httptest on host with many options set
   community.zabbix.zabbix_httptest:
-    name: Test
+    name: ExampleTest
     host_name: ExampleHost
     params:
       steps:
@@ -12,15 +12,15 @@
       interval: 1h
       enabled: True
     state: present
-  register: zbxhostrule_new
+  register: zbx_host_httptest_created
 
 - name: assert that httptest was created
   ansible.builtin.assert:
-    that: zbxhostrule_new is changed
+    that: zbx_host_httptest_created is changed
 
 - name: test - create same Zabbix httptest once again
   community.zabbix.zabbix_httptest:
-    name: Test
+    name: ExampleTest
     host_name: ExampleHost
     params:
       steps:
@@ -30,86 +30,86 @@
       interval: 1h
       enabled: True
     state: present
-  register: zbxhostrule_existing
+  register: zbx_host_httptest_existing
 
 - name: assert that nothing has been changed
   ansible.builtin.assert:
-    that: not zbxhostrule_existing is changed
+    that: not zbx_host_httptest_existing is changed
 
 - name: test - update existing zabbix httptest
   community.zabbix.zabbix_httptest:
-    name: Test
+    name: ExampleTest
     host_name: ExampleHost
     params:
       interval: 2h
     state: present
-  register: zbxhostrule_changed
+  register: zbx_host_httptest_changed
 
 - name: expect to succeed and that things changed
   ansible.builtin.assert:
-    that: zbxhostrule_changed is changed
+    that: zbx_host_httptest_changed is changed
 
 - name: test - rename existing zabbix httptest
   community.zabbix.zabbix_httptest:
-    name: Test
-    template_name: ExampleHost
+    name: ExampleTest
+    host_name: ExampleHost
     params:
-      new_name: NewTest
+      new_name: NewExampleTest
     state: present
-  register: zbxnamerule_changed
+  register: zbx_host_httptest_renamed
 
 - name: expect to succeed and that things changed
   ansible.builtin.assert:
-    that: zbxnamerule_changed is changed
+    that: zbx_host_httptest_renamed is changed
 
 - name: test - rename existing zabbix httptest again
   community.zabbix.zabbix_httptest:
-    name: Test
-    template_name: ExampleHost
+    name: NewExampleTest
+    host_name: ExampleHost
     params:
-      new_name: NewTest
+      new_name: NewExampleTest2
     state: present
-  register: zbxnamerule_existing
+  register: zbx_host_httptest_rename_again
 
 - name: assert that nothing has been changed
   ansible.builtin.assert:
-    that: not zbxnamerule_existing is changed
+    that: not zbx_host_httptest_rename_again is changed
 
 - name: test - rename non-existing zabbix httptest
   community.zabbix.zabbix_httptest:
-    name: Test
-    template_name: ExampleHost
+    name: ExampleTest
+    host_name: ExampleHost
     params:
-      new_name: NewTest2
+      new_name: NewExampleTest3
     state: present
   ignore_errors: true
-  register: zbxnamerule_failed
+  register: zbx_host_httptest_rename_failed
 
 - name: expect to fail
   ansible.builtin.assert:
-    that: zbxnamerule_failed is failed
+    that: zbx_host_httptest_rename_failed is failed
 
 - name: test - attempt to delete previously created zabbix httptest
   community.zabbix.zabbix_httptest:
-    name: NewTest
+    name: NewExampleTest2
     host_name: ExampleHost
     state: absent
-  register: zbxhostrule_existing_delete
+  register: zbx_host_httptest_delete
 
 - name: assert that httptest was deleted
   ansible.builtin.assert:
-    that: zbxhostrule_existing_delete is changed
+    that: zbx_host_httptest_delete is changed
 
 - name: test - attempt to delete non-existing zabbix httptest
   community.zabbix.zabbix_httptest:
-    name: NewTest
+    name: NewExampleTest2
     host_name: ExampleHost
     state: absent
-  register: zbxhostrule_missing_delete
+  register: zbx_host_httptest_missing_delete
 
 - name: assert that nothing has been changed
   ansible.builtin.assert:
-    that: not zbxhostrule_missing_delete is changed
+    that: not zbx_host_httptest_missing_delete is changed
 
 - name: test - create new Zabbix httptest on template with many options set
   community.zabbix.zabbix_httptest:
