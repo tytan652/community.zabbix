@@ -17,9 +17,10 @@
     - name: "cleanup httptest if tests failed"
       community.zabbix.zabbix_httptest:
         host_name: ExampleHost
-        name: ExampleTest
+        name: "{{ item }}"
         state: absent
       ignore_errors: true
+      loop: [ExampleTest, NewExampleTest]
 
     - name: "cleanup httptest if tests failed"
       community.zabbix.zabbix_httptest:
