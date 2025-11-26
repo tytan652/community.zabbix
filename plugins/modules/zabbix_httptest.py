@@ -520,7 +520,7 @@ def main():
     argument_spec = zabbix_utils.zabbix_common_argument_spec()
     argument_spec.update(dict(
         name=dict(type='str', required=True),
-        host_name=dict(type='str', required=False),
+        host_name=dict(type='str', required=True),
         params=dict(type='dict', required=False),
         state=dict(type='str', default="present", choices=['present', 'absent']),
     ))
