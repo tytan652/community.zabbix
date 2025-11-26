@@ -1,11 +1,5 @@
 ---
 
-- name: Create test template
-  community.zabbix.zabbix_template:
-    template_name: ExampleTemplate
-    template_groups:
-      - Templates
-
 - name: Create test host
   community.zabbix.zabbix_host:
     host_name: ExampleHost

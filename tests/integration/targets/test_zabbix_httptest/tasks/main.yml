@@ -23,13 +23,3 @@
       loop:
         - ExampleTest
         - NewExampleTest
-
-    - name: "cleanup httptest if tests failed"
-      community.zabbix.zabbix_httptest:
-        template_name: ExampleTemplate
-        name: "{{ item }}"
-        state: absent
-      ignore_errors: true
-      loop:
-        - ExampleTest
-        - NewExampleTest
